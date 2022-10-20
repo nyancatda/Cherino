@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-10-20 19:42:08
- * @LastEditTime: 2022-10-20 20:03:33
+ * @LastEditTime: 2022-10-20 20:30:05
  * @LastEditors: NyanCatda
  * @Description: 扫描可用代理
  * @FilePath: \Cherino\Scan\Scan.go
@@ -12,6 +12,8 @@ import (
 	"errors"
 	"fmt"
 
+	HTTPProxy "github.com/nyancatda/Cherino/Scan/HTTP"
+	HTTPSProxy "github.com/nyancatda/Cherino/Scan/HTTPS"
 	Socks4Proxy "github.com/nyancatda/Cherino/Scan/Socks4"
 	Socks5Proxy "github.com/nyancatda/Cherino/Scan/Socks5"
 	"github.com/nyancatda/Cherino/Tools"
@@ -24,7 +26,7 @@ var MaxPool = 500
 
 /**
  * @description: 扫描可用代理
- * @param {string} ProxyType 代理类型，可选：socks4/socks5
+ * @param {string} ProxyType 代理类型，可选：socks4/socks5/http/https
  * @param {[]int} StartIP 起始IP
  * @param {[]int} EndIP 结束IP
  * @param {int} StartPort 起始端口
@@ -38,6 +40,10 @@ func Proxy(ProxyType string, StartIP []int, EndIP []int, StartPort int, EndPort 
 	case "socks5":
 		break
 	case "socks4":
+		break
+	case "http":
+		break
+	case "https":
 		break
 	default:
 		return nil, errors.New("ProxyType is invalid")
@@ -71,6 +77,14 @@ func Proxy(ProxyType string, StartIP []int, EndIP []int, StartPort int, EndPort 
 			}
 		case "socks4":
 			if Socks4Proxy.Test(URL) {
+				OKProxyList = append(OKProxyList, URL)
+			}
+		case "http":
+			if HTTPProxy.Test(URL) {
+				OKProxyList = append(OKProxyList, URL)
+			}
+		case "https":
+			if HTTPSProxy.Test(URL) {
 				OKProxyList = append(OKProxyList, URL)
 			}
 		}
