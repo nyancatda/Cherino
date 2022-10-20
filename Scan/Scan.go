@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-10-20 19:42:08
- * @LastEditTime: 2022-10-20 19:50:33
+ * @LastEditTime: 2022-10-20 20:03:33
  * @LastEditors: NyanCatda
  * @Description: 扫描可用代理
  * @FilePath: \Cherino\Scan\Scan.go
@@ -12,6 +12,7 @@ import (
 	"errors"
 	"fmt"
 
+	Socks4Proxy "github.com/nyancatda/Cherino/Scan/Socks4"
 	Socks5Proxy "github.com/nyancatda/Cherino/Scan/Socks5"
 	"github.com/nyancatda/Cherino/Tools"
 	"github.com/nyancatda/Cherino/Tools/Check"
@@ -23,7 +24,7 @@ var MaxPool = 500
 
 /**
  * @description: 扫描可用代理
- * @param {string} ProxyType 代理类型，可选：socks5
+ * @param {string} ProxyType 代理类型，可选：socks4/socks5
  * @param {[]int} StartIP 起始IP
  * @param {[]int} EndIP 结束IP
  * @param {int} StartPort 起始端口
@@ -35,6 +36,8 @@ func Proxy(ProxyType string, StartIP []int, EndIP []int, StartPort int, EndPort 
 	// 检查输入
 	switch ProxyType {
 	case "socks5":
+		break
+	case "socks4":
 		break
 	default:
 		return nil, errors.New("ProxyType is invalid")
@@ -64,6 +67,10 @@ func Proxy(ProxyType string, StartIP []int, EndIP []int, StartPort int, EndPort 
 		switch ProxyType {
 		case "socks5":
 			if Socks5Proxy.Test(URL) {
+				OKProxyList = append(OKProxyList, URL)
+			}
+		case "socks4":
+			if Socks4Proxy.Test(URL) {
 				OKProxyList = append(OKProxyList, URL)
 			}
 		}
