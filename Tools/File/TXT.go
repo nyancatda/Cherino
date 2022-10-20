@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-10-20 21:37:55
- * @LastEditTime: 2022-10-20 21:41:23
+ * @LastEditTime: 2022-10-20 22:15:12
  * @LastEditors: NyanCatda
  * @Description:
  * @FilePath: \Cherino\Tools\File\TXT.go
@@ -24,7 +24,7 @@ var TXTFileName = "%s_proxy.txt"
  * @return {error} 错误信息
  */
 func WriteTXT(ProxyType string, URL string) error {
-	FileName := fmt.Sprintf(JsonFileName, ProxyType)
+	FileName := fmt.Sprintf(TXTFileName, ProxyType)
 	Path := filepath.Clean("./" + FileName)
 
 	Content := URL + "\n"
