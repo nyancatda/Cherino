@@ -3,10 +3,10 @@
  * @Date: 2022-10-20 17:09:55
  * @LastEditTime: 2022-10-20 19:42:28
  * @LastEditors: NyanCatda
- * @Description: 测试Socket5代理是否可用
- * @FilePath: \Cherino\Scan\Socket5\Test.go
+ * @Description: 测试Socks5代理是否可用
+ * @FilePath: \Cherino\Scan\Socks5\Test.go
  */
-package Socket5
+package Socks5
 
 import (
 	"net/http"

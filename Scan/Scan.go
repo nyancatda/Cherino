@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-10-20 19:42:08
- * @LastEditTime: 2022-10-20 19:46:25
+ * @LastEditTime: 2022-10-20 19:50:33
  * @LastEditors: NyanCatda
  * @Description: 扫描可用代理
  * @FilePath: \Cherino\Scan\Scan.go
@@ -12,7 +12,7 @@ import (
 	"errors"
 	"fmt"
 
-	Socket5Proxy "github.com/nyancatda/Cherino/Scan/Socket5"
+	Socks5Proxy "github.com/nyancatda/Cherino/Scan/Socks5"
 	"github.com/nyancatda/Cherino/Tools"
 	"github.com/nyancatda/Cherino/Tools/Check"
 	"github.com/nyancatda/Cherino/Tools/Pool"
@@ -63,7 +63,7 @@ func Proxy(ProxyType string, StartIP []int, EndIP []int, StartPort int, EndPort 
 
 		switch ProxyType {
 		case "socks5":
-			if Socket5Proxy.Test(URL) {
+			if Socks5Proxy.Test(URL) {
 				OKProxyList = append(OKProxyList, URL)
 			}
 		}
