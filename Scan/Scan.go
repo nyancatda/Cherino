@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-10-20 19:42:08
- * @LastEditTime: 2022-10-20 20:30:05
+ * @LastEditTime: 2022-10-20 20:51:00
  * @LastEditors: NyanCatda
  * @Description: 扫描可用代理
  * @FilePath: \Cherino\Scan\Scan.go
@@ -31,10 +31,10 @@ var MaxPool = 500
  * @param {[]int} EndIP 结束IP
  * @param {int} StartPort 起始端口
  * @param {int} EndPort 结束端口
- * @return {[]string} 可用代理列表
+ * @param {func(ProxyType string, URL string)} StatusOK 代理可用时回调
  * @return {error} 错误信息
  */
-func Proxy(ProxyType string, StartIP []int, EndIP []int, StartPort int, EndPort int) ([]string, error) {
+func Proxy(ProxyType string, StartIP []int, EndIP []int, StartPort int, EndPort int, StatusOK func(ProxyType string, URL string)) error {
 	// 检查输入
 	switch ProxyType {
 	case "socks5":
@@ -46,47 +46,42 @@ func Proxy(ProxyType string, StartIP []int, EndIP []int, StartPort int, EndPort 
 	case "https":
 		break
 	default:
-		return nil, errors.New("ProxyType is invalid")
+		return errors.New("ProxyType is invalid")
 	}
 
 	err := Check.IPCheck(StartIP, EndIP)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	err = Check.PortCheck(StartPort, EndPort)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
 	// 生成IP列表
 	IPList := Tools.IPList(StartIP, EndIP)
 
 	// 循环扫描端口范围内的代理
-	var OKProxyList []string
-
 	WaitGroup := Pool.NewPool(MaxPool)
 
 	Request := func(IP string, Port int) {
 		fmt.Println(1)
 		URL := IP + ":" + fmt.Sprintf("%d", Port)
 
+		var ProxStatus bool
 		switch ProxyType {
 		case "socks5":
-			if Socks5Proxy.Test(URL) {
-				OKProxyList = append(OKProxyList, URL)
-			}
+			ProxStatus = Socks5Proxy.Test(URL)
 		case "socks4":
-			if Socks4Proxy.Test(URL) {
-				OKProxyList = append(OKProxyList, URL)
-			}
+			ProxStatus = Socks4Proxy.Test(URL)
 		case "http":
-			if HTTPProxy.Test(URL) {
-				OKProxyList = append(OKProxyList, URL)
-			}
+			ProxStatus = HTTPProxy.Test(URL)
 		case "https":
-			if HTTPSProxy.Test(URL) {
-				OKProxyList = append(OKProxyList, URL)
-			}
+			ProxStatus = HTTPSProxy.Test(URL)
+		}
+
+		if ProxStatus {
+			StatusOK(ProxyType, URL)
 		}
 
 		WaitGroup.Done()
@@ -99,5 +94,5 @@ func Proxy(ProxyType string, StartIP []int, EndIP []int, StartPort int, EndPort 
 		}
 	}
 
-	return OKProxyList, nil
+	return nil
 }
