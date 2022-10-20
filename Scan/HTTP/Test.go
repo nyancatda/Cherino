@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-10-20 20:16:40
- * @LastEditTime: 2022-10-20 20:21:53
+ * @LastEditTime: 2022-10-20 22:10:07
  * @LastEditors: NyanCatda
  * @Description: 测试HTTP代理是否可用
  * @FilePath: \Cherino\Scan\HTTP\Test.go
@@ -12,6 +12,8 @@ import (
 	"net/http"
 	"net/url"
 	"time"
+
+	"github.com/nyancatda/Cherino/Tools/Flag"
 )
 
 /**
@@ -32,7 +34,7 @@ func Test(URL string) bool {
 	}
 
 	// 设置超时时间
-	TimeOut := time.Second * 3
+	TimeOut := time.Second * time.Duration(Flag.TimeOut)
 
 	// 设置请求参数
 	httpClient := &http.Client{

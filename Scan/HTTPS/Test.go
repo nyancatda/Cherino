@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-10-20 20:16:40
- * @LastEditTime: 2022-10-20 20:27:58
+ * @LastEditTime: 2022-10-20 22:03:58
  * @LastEditors: NyanCatda
  * @Description: 测试HTTPS代理是否可用
  * @FilePath: \Cherino\Scan\HTTPS\Test.go
@@ -32,7 +32,7 @@ func Test(URL string) bool {
 	}
 
 	// 设置超时时间
-	TimeOut := time.Second * 3
+	TimeOut := time.Second * 2
 
 	// 设置请求参数
 	httpClient := &http.Client{

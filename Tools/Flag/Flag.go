@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-10-20 20:57:58
- * @LastEditTime: 2022-10-20 21:48:34
+ * @LastEditTime: 2022-10-20 22:10:17
  * @LastEditors: NyanCatda
  * @Description: 获取参数
  * @FilePath: \Cherino\Tools\Flag\Flag.go
@@ -22,6 +22,7 @@ var Socks4 bool
 var HTTP bool
 var HTTPS bool
 var Pool int
+var TimeOut int64
 var SaveType string
 
 /**
@@ -42,6 +43,8 @@ func Get() error {
 	FlagHTTPS := flag.Bool("https", false, "获取HTTPS代理")
 
 	FlagPool := flag.Int("pool", 500, "最大线程数量")
+
+	FlagTimeOut := flag.Int64("timeout", 2, "测试超时时间，单位秒")
 
 	FlagSaveType := flag.String("save_type", "json", "保存方式，可选：json/txt")
 	flag.Parse()
@@ -72,6 +75,7 @@ func Get() error {
 	HTTP = *FlagHTTP
 	HTTPS = *FlagHTTPS
 	Pool = *FlagPool
+	TimeOut = *FlagTimeOut
 	SaveType = *FlagSaveType
 
 	return nil

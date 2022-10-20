@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-10-20 17:09:55
- * @LastEditTime: 2022-10-20 19:42:28
+ * @LastEditTime: 2022-10-20 22:03:45
  * @LastEditors: NyanCatda
  * @Description: 测试Socks5代理是否可用
  * @FilePath: \Cherino\Scan\Socks5\Test.go
@@ -30,7 +30,7 @@ func Test(URL string) bool {
 	httpTransport.Dial = Dialer.Dial
 
 	// 设置超时时间
-	TimeOut := time.Second * 3
+	TimeOut := time.Second * 2
 
 	// 设置请求参数
 	httpClient := &http.Client{
