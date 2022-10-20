@@ -1,4 +1,6 @@
 github.com/h12w/go-socks5 v0.0.0-20200522160539-76189e178364/go.mod h1:eDJQioIyy4Yn3MVivT7rv/39gAJTrA7lgmYr8EW950c=
+github.com/nyancatda/AyaLog v1.0.8 h1:WiDYjohukyy1fRdL+bSMZnRjMoYcP9lgQDed+qCbh6A=
+github.com/nyancatda/AyaLog v1.0.8/go.mod h1:ZbOWddB8xUfSdNuDAvfpTe76EGgOp1XaGouCTh+J+1w=
 github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2/go.mod h1:iIss55rKnNBTvrwdmkUpLnDpZoAHvWaiq5+iMmen4AE=
 golang.org/x/net v0.1.0 h1:hZ/3BUoy5aId7sCpA/Tc5lt8DkFgdVS2onTpJsZ/fl0=
 golang.org/x/net v0.1.0/go.mod h1:Cx3nUiGt4eDBEyega/BKRp+/AlGL8hYe7U9odMt2Cco=

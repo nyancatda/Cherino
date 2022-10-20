@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-10-20 19:42:08
- * @LastEditTime: 2022-10-20 20:51:00
+ * @LastEditTime: 2022-10-20 21:50:25
  * @LastEditors: NyanCatda
  * @Description: 扫描可用代理
  * @FilePath: \Cherino\Scan\Scan.go
@@ -65,7 +65,6 @@ func Proxy(ProxyType string, StartIP []int, EndIP []int, StartPort int, EndPort 
 	WaitGroup := Pool.NewPool(MaxPool)
 
 	Request := func(IP string, Port int) {
-		fmt.Println(1)
 		URL := IP + ":" + fmt.Sprintf("%d", Port)
 
 		var ProxStatus bool
