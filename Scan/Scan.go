@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-10-20 19:42:08
- * @LastEditTime: 2022-10-20 22:12:57
+ * @LastEditTime: 2022-10-20 23:17:44
  * @LastEditors: NyanCatda
  * @Description: 扫描可用代理
  * @FilePath: \Cherino\Scan\Scan.go
@@ -18,11 +18,9 @@ import (
 	Socks5Proxy "github.com/nyancatda/Cherino/Scan/Socks5"
 	"github.com/nyancatda/Cherino/Tools"
 	"github.com/nyancatda/Cherino/Tools/Check"
+	"github.com/nyancatda/Cherino/Tools/Flag"
 	"github.com/nyancatda/Cherino/Tools/Pool"
 )
-
-// 最大线程数
-var MaxPool = 500
 
 /**
  * @description: 扫描可用代理
@@ -61,39 +59,49 @@ func Proxy(ProxyType string, StartIP []int, EndIP []int, StartPort int, EndPort 
 	// 生成IP列表
 	IPList := Tools.IPList(StartIP, EndIP)
 
-	// 循环扫描端口范围内的代理
-	WaitGroup := Pool.NewPool(MaxPool)
-
-	Request := func(IP string, Port int) {
-		URL := IP + ":" + fmt.Sprintf("%d", Port)
-
-		var ProxStatus bool
-		switch ProxyType {
-		case "socks5":
-			ProxStatus = Socks5Proxy.Test(URL)
-		case "socks4":
-			ProxStatus = Socks4Proxy.Test(URL)
-		case "http":
-			ProxStatus = HTTPProxy.Test(URL)
-		case "https":
-			ProxStatus = HTTPSProxy.Test(URL)
-		}
-
-		if ProxStatus {
-			StatusOK(ProxyType, URL)
-		}
-
-		WaitGroup.Done()
+	// 计算线程分配
+	var IPMaxPool int
+	if len(IPList) > Flag.Pool/2 {
+		IPMaxPool = Flag.Pool / 2
+	} else {
+		IPMaxPool = len(IPList)
 	}
+	PortMaxPool := Flag.Pool - IPMaxPool
 
+	// 开始扫描
+	IPWaitGroup := Pool.NewPool(IPMaxPool)
+	IPWaitGroup.Add(1)
+	PortWaitGroup := Pool.NewPool(PortMaxPool)
 	for _, IP := range IPList {
-		for Port := StartPort; Port <= EndPort; Port++ {
-			WaitGroup.Add(1)
-			go Request(IP, Port)
-		}
-	}
+		go func(IP string) {
+			defer IPWaitGroup.Done()
+			for Port := StartPort; Port <= EndPort; Port++ {
+				PortWaitGroup.Add(1)
+				go func(IP string, Port int, WaitGroup *Pool.WaitGroup) {
+					defer WaitGroup.Done()
+					URL := IP + ":" + fmt.Sprintf("%d", Port)
 
-	WaitGroup.Wait()
+					var ProxStatus bool
+					switch ProxyType {
+					case "socks5":
+						ProxStatus = Socks5Proxy.Test(URL)
+					case "socks4":
+						ProxStatus = Socks4Proxy.Test(URL)
+					case "http":
+						ProxStatus = HTTPProxy.Test(URL)
+					case "https":
+						ProxStatus = HTTPSProxy.Test(URL)
+					}
+
+					if ProxStatus {
+						StatusOK(ProxyType, URL)
+					}
+				}(IP, Port, PortWaitGroup)
+			}
+			PortWaitGroup.Wait()
+		}(IP)
+	}
+	IPWaitGroup.Wait()
 
 	return nil
 }

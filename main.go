@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-10-20 17:06:29
- * @LastEditTime: 2022-10-20 22:02:11
+ * @LastEditTime: 2022-10-20 23:14:37
  * @LastEditors: NyanCatda
  * @Description: 主文件
  * @FilePath: \Cherino\main.go
@@ -51,7 +51,7 @@ func main() {
 			os.Exit(1)
 		}
 
-		AyaLog.Info("System", URL+" 是一个可用的"+ProxyType+"代理, 已写入文件")
+		AyaLog.Info("Scan", URL+" 是一个可用的"+ProxyType+"代理, 已写入文件")
 	}
 
 	AyaLog.Info("System", "起始IP: "+Flag.StartIP)
@@ -64,19 +64,35 @@ func main() {
 	// 扫描可用代理
 	if Flag.Socks5 {
 		AyaLog.Info("System", "Socks5代理扫描开始")
-		Scan.Proxy("socks5", StartIP, EndIP, Flag.StartPort, Flag.EndPort, WriteFile)
+		err := Scan.Proxy("socks5", StartIP, EndIP, Flag.StartPort, Flag.EndPort, WriteFile)
+		if err != nil {
+			AyaLog.Error("Scan", err)
+			return
+		}
 	}
 	if Flag.Socks4 {
 		AyaLog.Info("System", "Socks4代理扫描开始")
-		Scan.Proxy("socks4", StartIP, EndIP, Flag.StartPort, Flag.EndPort, WriteFile)
+		err := Scan.Proxy("socks4", StartIP, EndIP, Flag.StartPort, Flag.EndPort, WriteFile)
+		if err != nil {
+			AyaLog.Error("Scan", err)
+			return
+		}
 	}
 	if Flag.HTTP {
 		AyaLog.Info("System", "HTTP代理扫描开始")
-		Scan.Proxy("http", StartIP, EndIP, Flag.StartPort, Flag.EndPort, WriteFile)
+		err := Scan.Proxy("http", StartIP, EndIP, Flag.StartPort, Flag.EndPort, WriteFile)
+		if err != nil {
+			AyaLog.Error("Scan", err)
+			return
+		}
 	}
 	if Flag.HTTPS {
 		AyaLog.Info("System", "HTTPS代理扫描开始")
-		Scan.Proxy("https", StartIP, EndIP, Flag.StartPort, Flag.EndPort, WriteFile)
+		err := Scan.Proxy("https", StartIP, EndIP, Flag.StartPort, Flag.EndPort, WriteFile)
+		if err != nil {
+			AyaLog.Error("Scan", err)
+			return
+		}
 	}
 
 	os.Exit(0)
