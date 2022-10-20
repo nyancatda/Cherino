@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-10-20 21:23:42
- * @LastEditTime: 2022-10-20 21:58:14
+ * @LastEditTime: 2022-10-20 22:16:37
  * @LastEditors: NyanCatda
  * @Description: 写入Json文件
  * @FilePath: \Cherino\Tools\File\Json.go
@@ -41,7 +41,7 @@ func WriteJson(ProxyType string, URL string) error {
 	if err != nil {
 		return err
 	}
-	if Content != nil {
+	if len(Content) == 0 {
 		Content = []byte("[]")
 	}
 	if err := json.Unmarshal(Content, &ProxyList); err != nil {
