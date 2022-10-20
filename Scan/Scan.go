@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-10-20 19:42:08
- * @LastEditTime: 2022-10-20 21:50:25
+ * @LastEditTime: 2022-10-20 22:12:57
  * @LastEditors: NyanCatda
  * @Description: 扫描可用代理
  * @FilePath: \Cherino\Scan\Scan.go
@@ -92,6 +92,8 @@ func Proxy(ProxyType string, StartIP []int, EndIP []int, StartPort int, EndPort 
 			go Request(IP, Port)
 		}
 	}
+
+	WaitGroup.Wait()
 
 	return nil
 }
