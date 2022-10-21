@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-10-20 19:42:08
- * @LastEditTime: 2022-10-20 23:17:44
+ * @LastEditTime: 2022-10-21 13:15:10
  * @LastEditors: NyanCatda
  * @Description: 扫描可用代理
  * @FilePath: \Cherino\Scan\Scan.go
@@ -16,7 +16,6 @@ import (
 	HTTPSProxy "github.com/nyancatda/Cherino/Scan/HTTPS"
 	Socks4Proxy "github.com/nyancatda/Cherino/Scan/Socks4"
 	Socks5Proxy "github.com/nyancatda/Cherino/Scan/Socks5"
-	"github.com/nyancatda/Cherino/Tools"
 	"github.com/nyancatda/Cherino/Tools/Check"
 	"github.com/nyancatda/Cherino/Tools/Flag"
 	"github.com/nyancatda/Cherino/Tools/Pool"
@@ -56,23 +55,24 @@ func Proxy(ProxyType string, StartIP []int, EndIP []int, StartPort int, EndPort 
 		return err
 	}
 
-	// 生成IP列表
-	IPList := Tools.IPList(StartIP, EndIP)
-
-	// 计算线程分配
-	var IPMaxPool int
-	if len(IPList) > Flag.Pool/2 {
-		IPMaxPool = Flag.Pool / 2
-	} else {
-		IPMaxPool = len(IPList)
-	}
-	PortMaxPool := Flag.Pool - IPMaxPool
-
 	// 开始扫描
-	IPWaitGroup := Pool.NewPool(IPMaxPool)
+	IPWaitGroup := Pool.NewPool(Flag.Pool / 2)
 	IPWaitGroup.Add(1)
-	PortWaitGroup := Pool.NewPool(PortMaxPool)
-	for _, IP := range IPList {
+	PortWaitGroup := Pool.NewPool(Flag.Pool / 2)
+	for true {
+		if StartIP[3] > 255 {
+			StartIP[3] = 0
+			StartIP[2]++
+		}
+		if StartIP[2] > 255 {
+			StartIP[2] = 0
+			StartIP[1]++
+		}
+		if StartIP[1] > 225 {
+			StartIP[1] = 0
+			StartIP[0]++
+		}
+
 		go func(IP string) {
 			defer IPWaitGroup.Done()
 			for Port := StartPort; Port <= EndPort; Port++ {
@@ -99,7 +99,13 @@ func Proxy(ProxyType string, StartIP []int, EndIP []int, StartPort int, EndPort 
 				}(IP, Port, PortWaitGroup)
 			}
 			PortWaitGroup.Wait()
-		}(IP)
+		}(fmt.Sprintf("%d.%d.%d.%d", StartIP[0], StartIP[1], StartIP[2], StartIP[3]))
+
+		if StartIP[3] == EndIP[3] && StartIP[2] == EndIP[2] && StartIP[1] == EndIP[1] && StartIP[0] == EndIP[0] {
+			break
+		}
+
+		StartIP[3]++
 	}
 	IPWaitGroup.Wait()
 

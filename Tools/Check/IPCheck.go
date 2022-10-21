@@ -56,7 +56,7 @@ func IPCheck(StartIP []int, EndIP []int) error {
 				}
 			}
 			if StartIPIndex == 2 {
-				if EndIPValue <= StartIPValue {
+				if EndIPValue < StartIPValue {
 					return errors.New("wrong IP range")
 				}
 				if EndIPValue > StartIPValue {
