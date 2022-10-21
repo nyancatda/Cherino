@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-10-20 20:57:58
- * @LastEditTime: 2022-10-20 22:10:17
+ * @LastEditTime: 2022-10-21 12:53:22
  * @LastEditors: NyanCatda
  * @Description: 获取参数
  * @FilePath: \Cherino\Tools\Flag\Flag.go
@@ -11,10 +11,13 @@ package Flag
 import (
 	"errors"
 	"flag"
+
+	"github.com/nyancatda/Cherino/Tools/Check"
+	"github.com/nyancatda/Cherino/Tools/SplitIP"
 )
 
-var StartIP string
-var EndIP string
+var StartIP []int
+var EndIP []int
 var StartPort int
 var EndPort int
 var Socks5 bool
@@ -49,6 +52,16 @@ func Get() error {
 	FlagSaveType := flag.String("save_type", "json", "保存方式，可选：json/txt")
 	flag.Parse()
 
+	// 转换参数
+	StartIPSplit, err := SplitIP.StrToArrayInt(*FlagStartIP)
+	if err != nil {
+		return err
+	}
+	EndIPSplit, err := SplitIP.StrToArrayInt(*FlagEndIP)
+	if err != nil {
+		return err
+	}
+
 	// 检查参数
 	if !*FlagSocks5 && !*FlagSocks4 && !*FlagHTTP && !*FlagHTTPS {
 		return errors.New("必须指定至少一个代理类型")
@@ -64,10 +77,18 @@ func Get() error {
 	default:
 		return errors.New("保存方式不可用")
 	}
+	err = Check.IPCheck(StartIPSplit, EndIPSplit)
+	if err != nil {
+		return err
+	}
+	err = Check.PortCheck(*FlagStartPort, *FlagEndPort)
+	if err != nil {
+		return err
+	}
 
 	// 参数写入变量
-	StartIP = *FlagStartIP
-	EndIP = *FlagEndIP
+	StartIP = StartIPSplit
+	EndIP = EndIPSplit
 	StartPort = *FlagStartPort
 	EndPort = *FlagEndPort
 	Socks5 = *FlagSocks5

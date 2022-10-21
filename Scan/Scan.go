@@ -1,7 +1,7 @@
 /*
  * @Author: NyanCatda
  * @Date: 2022-10-20 19:42:08
- * @LastEditTime: 2022-10-20 23:17:44
+ * @LastEditTime: 2022-10-21 12:56:57
  * @LastEditors: NyanCatda
  * @Description: 扫描可用代理
  * @FilePath: \Cherino\Scan\Scan.go
@@ -16,7 +16,6 @@ import (
 	HTTPSProxy "github.com/nyancatda/Cherino/Scan/HTTPS"
 	Socks4Proxy "github.com/nyancatda/Cherino/Scan/Socks4"
 	Socks5Proxy "github.com/nyancatda/Cherino/Scan/Socks5"
-	"github.com/nyancatda/Cherino/Tools"
 	"github.com/nyancatda/Cherino/Tools/Check"
 	"github.com/nyancatda/Cherino/Tools/Flag"
 	"github.com/nyancatda/Cherino/Tools/Pool"
@@ -25,14 +24,13 @@ import (
 /**
  * @description: 扫描可用代理
  * @param {string} ProxyType 代理类型，可选：socks4/socks5/http/https
- * @param {[]int} StartIP 起始IP
- * @param {[]int} EndIP 结束IP
+ * @param {[]string} IPList IP列表
  * @param {int} StartPort 起始端口
  * @param {int} EndPort 结束端口
  * @param {func(ProxyType string, URL string)} StatusOK 代理可用时回调
  * @return {error} 错误信息
  */
-func Proxy(ProxyType string, StartIP []int, EndIP []int, StartPort int, EndPort int, StatusOK func(ProxyType string, URL string)) error {
+func Proxy(ProxyType string, IPList []string, StartPort int, EndPort int, StatusOK func(ProxyType string, URL string)) error {
 	// 检查输入
 	switch ProxyType {
 	case "socks5":
@@ -46,18 +44,10 @@ func Proxy(ProxyType string, StartIP []int, EndIP []int, StartPort int, EndPort 
 	default:
 		return errors.New("ProxyType is invalid")
 	}
-
-	err := Check.IPCheck(StartIP, EndIP)
+	err := Check.PortCheck(StartPort, EndPort)
 	if err != nil {
 		return err
 	}
-	err = Check.PortCheck(StartPort, EndPort)
-	if err != nil {
-		return err
-	}
-
-	// 生成IP列表
-	IPList := Tools.IPList(StartIP, EndIP)
 
 	// 计算线程分配
 	var IPMaxPool int
