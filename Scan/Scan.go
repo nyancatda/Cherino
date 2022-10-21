@@ -24,14 +24,13 @@ import (
 /**
  * @description: 扫描可用代理
  * @param {string} ProxyType 代理类型，可选：socks4/socks5/http/https
- * @param {[]int} StartIP 起始IP
- * @param {[]int} EndIP 结束IP
+ * @param {[]string} IPList IP列表
  * @param {int} StartPort 起始端口
  * @param {int} EndPort 结束端口
  * @param {func(ProxyType string, URL string)} StatusOK 代理可用时回调
  * @return {error} 错误信息
  */
-func Proxy(ProxyType string, StartIP []int, EndIP []int, StartPort int, EndPort int, StatusOK func(ProxyType string, URL string)) error {
+func Proxy(ProxyType string, IPList []string, StartPort int, EndPort int, StatusOK func(ProxyType string, URL string)) error {
 	// 检查输入
 	switch ProxyType {
 	case "socks5":
@@ -45,12 +44,7 @@ func Proxy(ProxyType string, StartIP []int, EndIP []int, StartPort int, EndPort 
 	default:
 		return errors.New("ProxyType is invalid")
 	}
-
-	err := Check.IPCheck(StartIP, EndIP)
-	if err != nil {
-		return err
-	}
-	err = Check.PortCheck(StartPort, EndPort)
+	err := Check.PortCheck(StartPort, EndPort)
 	if err != nil {
 		return err
 	}
